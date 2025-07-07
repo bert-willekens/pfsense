@@ -1452,9 +1452,13 @@
 
 					// Get the current record ID and value.
 					$url = "https://api.openprovider.eu/v1beta/dns/zones?name_pattern=" . urlencode($this->_dnsDomain) . "&with_records=true";
+					$request_headers = array();
+					$request_headers[] = 'Accept: application/json';
+					$request_headers[] = 'Authorization: Bearer ' . $bearertoken;
+					$request_headers[] = 'Content-Type: application/json';
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+					curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
 					curl_setopt($ch, CURLOPT_URL, $url);
-					curl_setopt($ch, CURLOPT_COOKIE, $cookie_data);
 					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
 					curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
 					if($this->_dnsVerboseLog){
