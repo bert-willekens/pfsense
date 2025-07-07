@@ -1428,7 +1428,7 @@
 					// curl_setopt($ch, CURLOPT_COOKIE, $cookie_data);
 					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
 					curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
-					$jsondata = '[{"username":"' . $this->_dnsUser . '","password":"' . $this->_dnsPass . '""}]';
+					$jsondata = '{"username":"' . $this->_dnsUser . '","password":"' . $this->_dnsPass . '""}';
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 					curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 						'Accept: application/json',
