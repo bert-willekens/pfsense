@@ -1424,11 +1424,6 @@
 					$post_data['username'] = $this->_dnsUser;
 					$post_data['password'] = $this->_dnsPass;
 
-					if($this->_dnsVerboseLog){
-							log_error(sprintf("Contacting openprovider.eu with these details:"));
-							log_error(sprintf("dnsDomain: %s dnsHost: %s", $this->_dnsDomain, $this->_dnsHost));
-					}
-
 					$record_type = ($isv6 ? 'AAAA' : 'A');
 
 					// Login to the API and grab token.
@@ -1437,6 +1432,9 @@
 					curl_setopt($ch, CURLOPT_COOKIE, $cookie_data);
 					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
 					curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+					if($this->_dnsVerboseLog){
+							log_error(sprintf("Payload: %s", $post_data));
+					}
 					$server_output = curl_exec($ch);
 					$httpcode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 					if($this->_dnsVerboseLog){
