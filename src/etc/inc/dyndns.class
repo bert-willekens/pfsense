@@ -1480,8 +1480,9 @@
 							}
 
 							// While we are here also grab the _dnsHost id.
-							foreach ($rec['records'] as $hostrec) {
-								if ($hostrec['name'] == $this->_dnsHost && $hostrec['type'] == $record_type) {
+							records = $rec['records'];
+							foreach ($records as $hostrec) {
+								if ($hostrec['name'] == $this->_dnsHost . $this_>_dnsDomain && $hostrec['type'] == $record_type) {
 									$host_id = $hostrec['id'];
 									$current_val = $hostrec['value'];
 									if($this->_dnsVerboseLog){
