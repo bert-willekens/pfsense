@@ -670,6 +670,8 @@ events.push(function() {
 			case "dyfi":
 			case "nicru":
 			case "nicru-v6":
+			case "openprovider":
+			case "openprovider-v6":
 				hideInput('mx', true);
 				hideCheckbox('wildcard', true);
 				break;
