@@ -72,6 +72,7 @@
 	 *    - Namecheap (namecheap.com)
 	 *    - No-IP (no-ip.com)
 	 *    - OpenDNS (opendns.com)
+	 *    - Openprovider (openprovider.com)
 	 *    - Porkbun (porkbun.com)
 	 *    - SelfHost (selfhost.de)
 	 *    - SPDYN (spdyn.de)
@@ -142,6 +143,7 @@
 	 *  No-IP           - Last Tested: 20 July 2008
 	 *  ODS             - Last Tested: 02 August 2005
 	 *  OpenDNS         - Last Tested: 4 August 2008
+	 *  Openprovider    - Last Tested: 10 July 2025
 	 *  OVH DynHOST     - Last Tested: NEVER
 	 *  Porkbun         - Last Tested: 22 October 2024
 	 *  SelfHost        - Last Tested: 26 December 2011
@@ -152,10 +154,10 @@
 	 *  ZoneEdit        - Last Tested: NEVER
 	 * +====================================================+
 	 *
-	 * @author 	E.Kristensen
-	 * @link    	http://www.idylldesigns.com/projects/phpdns/
-	 * @version 	0.8
-	 * @updated	13 October 05 at 21:02:42 GMT
+	 * @author  E.Kristensen
+	 * @link        http://www.idylldesigns.com/projects/phpdns/
+	 * @version     0.8
+	 * @updated 13 October 05 at 21:02:42 GMT
 	 *
 	 * DNSexit/OpenDNS support and multiwan extension for pfSense by Ermal Luçi and Koen Zomers
 	 * Custom DNS support by Matt Corallo
@@ -322,6 +324,8 @@
 				break;
 			case 'gratisdns':
 			case 'hover':
+			case 'openprovider':
+			case 'openprovider-v6':
 			case 'name.com':
 			case 'name.com-v6':
 				if (!$dnsUser) $this->_error(3);
@@ -375,6 +379,7 @@
 				case 'name.com-v6':
 				case 'noip-free-v6':
 				case 'noip-v6':
+				case 'openprovider-v6':
 				case 'porkbun-v6':
 				case 'route53-v6':
 				case 'spdyn-v6':
@@ -520,6 +525,8 @@
 					case 'noip-v6':
 					case 'ods':
 					case 'opendns':
+					case 'openprovider':
+					case 'openprovider-v6':
 					case 'ovh-dynhost':
 					case 'porkbun':
 					case 'porkbun-v6':
@@ -689,8 +696,8 @@
 						$port = ":" . $this->_dnsPort;
 					}
 					if (($this->_dnsService == "noip-free-v6") &&
-					    ($this->_forceUpdateNeeded == true) &&
-					    ($this->_dnsDummyUpdateDone == false)) {
+						($this->_forceUpdateNeeded == true) &&
+						($this->_dnsDummyUpdateDone == false)) {
 						// Update the IP to a dummy value to force No-IP free accounts to see a change.
 						$iptoset = "fd00:d::1";
 						$this->_dnsDummyUpdateDone = true;
@@ -716,8 +723,8 @@
 						$port = ":" . $this->_dnsPort;
 					}
 					if (($this->_dnsService == "noip-free") &&
-					    ($this->_forceUpdateNeeded == true) &&
-					    ($this->_dnsDummyUpdateDone == false)) {
+						($this->_forceUpdateNeeded == true) &&
+						($this->_dnsDummyUpdateDone == false)) {
 						// Update the IP to a dummy value to force No-IP free accounts to see a change.
 						$iptoset = "192.168.1.1";
 						$this->_dnsDummyUpdateDone = true;
@@ -1045,8 +1052,8 @@
 					$post_data['type'] = $record_type;
 					// Porkbun doesn't allow you to "update" an existing record with the same IP
 					if (($record_id) &&
-					    ($this->_forceUpdateNeeded == true) &&
-					    ($this->_dnsDummyUpdateDone == false)) {
+						($this->_forceUpdateNeeded == true) &&
+						($this->_dnsDummyUpdateDone == false)) {
 						$post_data['content'] = ($this->_addressFamilyRR == AF_INET6) ? "fd00:d::1" : "127.0.0.1";
 						$this->_dnsDummyUpdateDone = true;
 						$log_message = 'Dynamic DNS %1$s (%2$s): ';
@@ -1080,8 +1087,8 @@
 					if (is_array($output["records"])) {
 						foreach($output["records"] as $record) {
 							if (($record["domain"] == $this->_dnsDomain) &&
-							    ($record["subdomain"] == $this->_dnsHost) &&
-							    ($record["type"] == $type)) {
+								($record["subdomain"] == $this->_dnsHost) &&
+								($record["type"] == $type)) {
 								$record_id = $record["record_id"];
 							}
 						}
@@ -1412,6 +1419,109 @@
 						log_error("HostID:{$hostID}, OldIP:{$hostIP}");
 					}
 					break;
+				case 'openprovider':
+				case 'openprovider-v6':
+					$post_data['username'] = $this->_dnsUser;
+					$post_data['password'] = $this->_dnsPass;
+					$post_data['credentialId'] = '';
+
+					$record_type = ($isv6 ? 'AAAA' : 'A');
+
+					// Login to the API and grab token.
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+					curl_setopt($ch, CURLOPT_URL, "https://api.openprovider.eu/v1beta/auth/login");
+					curl_setopt($ch, CURLOPT_COOKIE, $cookie_data);
+					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
+					curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+					$server_output = curl_exec($ch);
+					$httpcode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+					preg_match('/"token":\s*"(?<tok>[^"]+)"/', $server_output, $result);
+					if (isset($result['tok'])) {
+						$bearertoken = $result['tok'];
+						if($this->_dnsVerboseLog){
+							log_error(sprintf(gettext('Login to openprovider.eu successful.')));
+						}
+					} else {
+						log_error(sprintf(gettext('Login to openprovider.eu failed!')));
+						return false;
+					}
+
+					// Get the current record ID and value.
+					$url = "https://api.openprovider.eu/v1beta/dns/zones?name_pattern=" . urlencode($this->_dnsDomain) . "&with_records=true";
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_COOKIE, $cookie_data);
+					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
+					curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+					$server_output = curl_exec($ch);
+					$result = json_decode($server_output, true);
+					$results = $result['data']['results'];
+
+					// Find the id of the dnsDomain.
+					foreach ($results as $rec) {
+						if ($rec['name'] == $this->_dnsDomain) {
+							$domain_id = $rec['id'];
+
+							// While we are here also grab the _dnsHost id.
+							foreach ($rec['records'] as $hostrec) {
+								if ($hostrec['name'] == $this->_dnsHost && $hostrec['type'] == $record_type) {
+									$host_id = $hostrec['id'];
+									$current_val = $hostrec['value'];
+								}
+								break;
+							}
+							break;
+						}
+					}
+
+					// Stop here if something smells bad.
+					if (!$domain_id || !$host_id) {
+						log_error(sprintf(gettext('Failed to get either the domain or record ID.')));
+						return false;
+					}
+
+					// Check the current value.
+					if ($current_val == $newip) {
+						if($this->_dnsVerboseLog){
+							log_error(sprintf(gettext('Record value is up-to-date.')));
+						}
+						break;
+					}
+
+					// Prepare the JSON update data.
+					$update_data = [
+						"update" => [
+							[
+								"original_record" => [
+									"name" => $this->_dnsHost,
+									"id" => $host_id,
+								],
+								"record" => [
+									"name" => $this->_dnsHost,
+									"value" => $newip,
+								]
+							]
+						]
+					];
+
+					// Convert the PHP array to a JSON string
+					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);                                 
+
+					// Update the DNS record.
+					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . urlencode($this->_dnsDomain);
+					$request_headers = array();
+					$request_headers[] = 'Accept: application/json';
+					$request_headers[] = 'Authorization: Bearer ' . $bearertoken;
+					$request_headers[] = 'Content-Type: application/json';
+					curl_setopt($ch, CURLOPT_URL, $url);
+					curl_setopt($ch, CURLOPT_USERAGENT, $this->_UserAgent);
+					curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonString);
+					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+					curl_setopt($ch, CURLOPT_HEADER, 1);
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+					break;
+
 				case 'onecom':
 				case 'onecom-v6':
 					/* see https://redmine.pfsense.org/issues/11293
@@ -2986,10 +3096,10 @@
 					}
 					break;
 				case 'all-inkl':
- 					if (preg_match('/good\s' . $this->_dnsIP . '/i', $data)) {
+					if (preg_match('/good\s' . $this->_dnsIP . '/i', $data)) {
 							$status = $status_intro . $success_str . gettext("IP Address Changed Successfully!") . " (" . $this->_dnsIP . ")";
- 							$successful_update = true;
- 					} else if (preg_match('/good/i', $data)) {
+							$successful_update = true;
+					} else if (preg_match('/good/i', $data)) {
 						$status = $status_intro . $error_str . gettext("Result did not match.");
 					} else if (preg_match("/\s401\sUnauthorized/i", $header)) {
 						$status = $status_intro . $error_str . gettext("Invalid username or password");
@@ -2997,10 +3107,10 @@
 					else {
 							$status = $status_intro . "(" . gettext("Unknown Response") . ")";
 							log_error($status_intro . gettext("PAYLOAD:") . " " . $header . $data);
- 							$this->_debug($data);
- 							$this->_debug($header);
- 					}
- 					break;
+							$this->_debug($data);
+							$this->_debug($header);
+					}
+					break;
 				case 'hover':
 					if (preg_match('/succeeded":true/i', $data)) {
 						$status = $status_intro . $success_str . gettext("IP Address Changed Successfully!") . " (" . $this->_dnsIP . ")";
