@@ -670,8 +670,6 @@ events.push(function() {
 			case "dyfi":
 			case "nicru":
 			case "nicru-v6":
-			case "openprovider":
-			case "openprovider-v6":
 				hideInput('mx', true);
 				hideCheckbox('wildcard', true);
 				break;
@@ -687,6 +685,8 @@ events.push(function() {
 			case "onecom-v6":
 			case "porkbun":
 			case "porkbun-v6":
+			case "openprovider":
+			case "openprovider-v6":
 				hideGroupInput('domainname', false);
 				hideInput('mx', true);
 				hideCheckbox('wildcard', true);
