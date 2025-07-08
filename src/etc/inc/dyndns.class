@@ -1428,6 +1428,14 @@
 						$record_type = "A";
 					}
 
+					// Increase the TTL when needed. Minimal 600 seconds for Openprovider.
+					if ($this->_dnsTTL < 600) {
+						$this->_dnsTTL = 600
+						if($this->_dnsVerboseLog){
+							log_error(sprintf('Configured TTL too low. Adjusted the value to 600.'));
+						}
+					}
+
 					// Login to the API and grab token.
 					$jsondata = '{"username":"' . $this->_dnsUser . '","password":"' . $this->_dnsPass . '"}';
 					curl_setopt($ch, CURLOPT_URL, "https://api.openprovider.eu/v1beta/auth/login");
@@ -1528,6 +1536,7 @@
 								"record" => [
 									"name" => $this->_dnsHost,
 									"value" => $this->_dnsIP,
+									"ttl" => $this->_dnsTTL
 								]
 							]
 						]
