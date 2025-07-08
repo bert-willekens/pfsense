@@ -1549,7 +1549,7 @@
 					// Convert the PHP array to a JSON string
 					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);                                 
 					if($this->_dnsVerboseLog){
-						log_error(sprintf('%s',jsonString));
+						log_error(sprintf('%s',$jsonString));
 					}					
 					// Update the DNS record.
 					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . urlencode($this->_dnsDomain);
