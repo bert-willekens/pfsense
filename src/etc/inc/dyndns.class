@@ -1480,7 +1480,7 @@
 							}
 
 							// While we are here also grab the _dnsHost id.
-							records = $rec['records'];
+							$records = $rec['records'];
 							foreach ($records as $hostrec) {
 								if ($hostrec['name'] == $this->_dnsHost . $this_>_dnsDomain && $hostrec['type'] == $record_type) {
 									$host_id = $hostrec['id'];
