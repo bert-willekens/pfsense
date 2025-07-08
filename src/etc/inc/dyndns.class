@@ -1471,10 +1471,6 @@
 					}
 					$results = $result['data']['results'];
 
-					if($this->_dnsVerboseLog){
-						log_error(sprintf('%s', $results));
-					}
-
 					// Find the id of the dnsDomain.
 					foreach ($results as $rec) {
 						if ($rec['name'] == $this->_dnsDomain) {
@@ -1485,6 +1481,12 @@
 
 							// While we are here also grab the _dnsHost id.
 							foreach ($rec['records'] as $hostrec) {
+
+								if($this->_dnsVerboseLog){
+									log_error(sprintf('Working on record %s', implode($hostrec)));
+									lgo_error(sprintf('%s', $hostrec['name']))
+								}
+
 								if ($hostrec['name'] == $this->_dnsHost . "." . $this->_dnsDomain && $hostrec['type'] == $record_type) {
 									$host_id = $hostrec['id'];
 									$current_val = $hostrec['value'];
