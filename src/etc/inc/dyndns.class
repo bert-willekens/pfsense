@@ -1513,7 +1513,8 @@
 						if($this->_dnsVerboseLog){
 							log_error(sprintf(gettext('Record value is up-to-date.')));
 						}
-						break;
+						$this->_checkStatus(null, null, "nochg", null);
+						return false;
 					}
 
 					// Prepare the JSON update data.
@@ -2677,6 +2678,8 @@
 						$this->_debug($data);
 					}
 					break;
+				case 'openprovider':
+				case 'openprovider-v6':
 				case 'loopia':
 					if (preg_match("/nochg/i", $data)) {
 						$status = $status_intro . $success_str . gettext("No Change In IP Address");
