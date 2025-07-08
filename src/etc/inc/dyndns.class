@@ -1498,7 +1498,7 @@
 								}
 								
 							}
-							break;
+						break;
 						}
 					}
 
@@ -1509,7 +1509,7 @@
 					}
 
 					// Check the current value.
-					if ($current_val == $newip) {
+					if ($current_val == $this->_dnsIP) {
 						if($this->_dnsVerboseLog){
 							log_error(sprintf(gettext('Record value is up-to-date.')));
 						}
@@ -1526,7 +1526,7 @@
 								],
 								"record" => [
 									"name" => $this->_dnsHost,
-									"value" => $newip,
+									"value" => $this->_dnsIP,
 								]
 							]
 						]
