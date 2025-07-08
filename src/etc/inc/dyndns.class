@@ -1557,7 +1557,7 @@
 					curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonString);
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($ch, CURLOPT_HEADER, 1);
-					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
 					break;
 				case 'onecom':
 				case 'onecom-v6':
