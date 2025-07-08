@@ -1482,11 +1482,11 @@
 							// While we are here also grab the _dnsHost id.
 							foreach ($rec['records'] as $hostrec) {
 
-								if($this->_dnsVerboseLog){
-									log_error(sprintf('Working on record %s', implode($hostrec)));
-									log_error(sprintf('%s', $hostrec['name']));
-									log_error(sprintf('%s', $hostrec['type']));
-								}
+								//if($this->_dnsVerboseLog){
+								//	log_error(sprintf('Working on record %s', implode($hostrec)));
+								//	log_error(sprintf('%s', $hostrec['name']));
+								//	log_error(sprintf('%s', $hostrec['type']));
+								//}
 
 								if ($hostrec['name'] == $this->_dnsHost . "." . $this->_dnsDomain && $hostrec['type'] == $record_type) {
 									$host_id = $hostrec['id'];
@@ -1494,8 +1494,9 @@
 									if($this->_dnsVerboseLog){
 										log_error(sprintf('Found host ID: %s with value %s', $host_id, $current_val));
 									}
+									break;
 								}
-								break;
+								
 							}
 							break;
 						}
