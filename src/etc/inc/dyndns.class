@@ -1421,7 +1421,12 @@
 					break;
 				case 'openprovider':
 				case 'openprovider-v6':
-					$record_type = ($isv6 ? 'AAAA' : 'A');
+					// Set the correct record type.
+					if ($this->_addressFamilyRR == AF_INET6) {
+						$record = "AAAA";
+					} else {
+						$record = "A";
+					}
 
 					// Login to the API and grab token.
 					$jsondata = '{"username":"' . $this->_dnsUser . '","password":"' . $this->_dnsPass . '"}';
@@ -1436,9 +1441,7 @@
 					));								
 					$server_output = curl_exec($ch);
 					$httpcode = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-					if($this->_dnsVerboseLog){
-							log_error(sprintf("%s", $server_output));
-						}
+
 					preg_match('/"token":\s*"(?<tok>[^"]+)"/', $server_output, $result);
 					if (isset($result['tok'])) {
 						$bearertoken = $result['tok'];
@@ -1447,6 +1450,7 @@
 						}
 					} else {
 						log_error(sprintf('Login to openprovider.eu failed!'));
+						$this->_checkStatus(null, null, "badauth", null);
 						return false;
 					}
 
@@ -1523,7 +1527,6 @@
 							[
 								"original_record" => [
 									"name" => $this->_dnsHost,
-									"id" => $host_id,
 								],
 								"record" => [
 									"name" => $this->_dnsHost,
