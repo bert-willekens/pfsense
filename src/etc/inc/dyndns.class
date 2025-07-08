@@ -1484,7 +1484,7 @@
 
 								if($this->_dnsVerboseLog){
 									log_error(sprintf('Working on record %s', implode($hostrec)));
-									lgo_error(sprintf('%s', $hostrec['name']));
+									log_error(sprintf('%s', $hostrec['name']));
 								}
 
 								if ($hostrec['name'] == $this->_dnsHost . "." . $this->_dnsDomain && $hostrec['type'] == $record_type) {
