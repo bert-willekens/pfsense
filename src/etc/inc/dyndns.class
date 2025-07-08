@@ -1423,9 +1423,9 @@
 				case 'openprovider-v6':
 					// Set the correct record type.
 					if ($this->_addressFamilyRR == AF_INET6) {
-						$record = "AAAA";
+						$record_type = "AAAA";
 					} else {
-						$record = "A";
+						$record_type = "A";
 					}
 
 					// Login to the API and grab token.
@@ -1470,9 +1470,6 @@
 					}
 					$server_output = curl_exec($ch);
 					$result = json_decode($server_output, true);
-					if($this->_dnsVerboseLog){
-						log_error(sprintf('%s', $server_output));
-					}
 					$results = $result['data']['results'];
 
 					// Find the id of the dnsDomain.
