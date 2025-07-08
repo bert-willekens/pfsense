@@ -1489,10 +1489,10 @@
 								//}
 
 								if ($hostrec['name'] == $this->_dnsHost . "." . $this->_dnsDomain && $hostrec['type'] == $record_type) {
-									$host_id = $hostrec['id'];
+									$host_ttl = $hostrec['ttl'];
 									$current_val = $hostrec['value'];
 									if($this->_dnsVerboseLog){
-										log_error(sprintf('Found host ID: %s with value %s', $host_id, $current_val));
+										log_error(sprintf('Found host %s with value %s', $hostrec['name'], $current_val));
 									}
 									break;
 								}
@@ -1503,8 +1503,8 @@
 					}
 
 					// Stop here if something smells bad.
-					if (!$domain_id || !$host_id) {
-						log_error(sprintf(gettext('Failed to get either the domain or record ID.')));
+					if (!$domain_id || !$current_val) {
+						log_error(sprintf(gettext('Failed to get either the domain ID or host record value.')));
 						return false;
 					}
 
