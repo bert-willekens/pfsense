@@ -1528,15 +1528,19 @@
 
 					// Prepare the JSON update data.
 					$update_data = [
-						"update" => [
-							[
-								"original_record" => [
-									"name" => $this->_dnsHost,
-								],
-								"record" => [
-									"name" => $this->_dnsHost,
-									"value" => $this->_dnsIP,
-									"ttl" => $this->_dnsTTL
+						"id" => domain_id,
+						"name" => $this->_dnsDomain,
+						"records" => [
+							"update" => [
+								[
+									"original_record" => [
+										"name" => $this->_dnsHost,
+									],
+									"record" => [
+										"name" => $this->_dnsHost,
+										"value" => $this->_dnsIP,
+										"ttl" => $this->_dnsTTL
+									]
 								]
 							]
 						]
@@ -1544,7 +1548,9 @@
 
 					// Convert the PHP array to a JSON string
 					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);                                 
-
+					if($this->_dnsVerboseLog){
+						log_error(sprintf('%s',jsonString));
+					}					
 					// Update the DNS record.
 					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . urlencode($this->_dnsDomain);
 					$request_headers = array();
