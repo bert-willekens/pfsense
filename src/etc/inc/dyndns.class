@@ -2083,7 +2083,7 @@
 				curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
 				$response = curl_exec($ch);
 				if ($this->_dnsVerboseLog) { // TODO: Remove in PRD.
-					log_error(sprintf("%s", curl_getinfo($ch)));
+					log_error(sprintf("%s", implode(curl_getinfo($ch))));
 				}
 				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 				$header = substr($response, 0, $header_size);
