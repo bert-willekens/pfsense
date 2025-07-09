@@ -1551,10 +1551,10 @@
 					);
 
 					// Convert the PHP array to a JSON string
-					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);			
+					$jsonString = json_encode($update_data);			
 
 					// Update the DNS record.
-					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . $this->_dnsDomain;
+					$url = "https://api.openprovider.eu/v1beta/dns/zones/" . $this->_dnsDomain;
 					$request_headers = array();
 					$request_headers[] = 'Accept: application/json';
 					$request_headers[] = 'Authorization: Bearer ' . $bearertoken;
@@ -1566,10 +1566,6 @@
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($ch, CURLOPT_HEADER, 1);
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-					if($this->_dnsVerboseLog){
-						log_error(sprintf('PUT %s', $url));
-						log_error(sprintf('Payload: %s', $jsonString));
-					}					
 					break;
 				case 'onecom':
 				case 'onecom-v6':
@@ -2078,15 +2074,11 @@
 			}
 			if ($this->_dnsService != 'ods') {
 				curl_setopt($ch, CURLOPT_HEADER, 1);
-				curl_setopt($ch, CURLINFO_HEADER_OUT, true); // TODO: remove in PRD.
 				if ($this->_curlProxy == true) {
 					set_curlproxy($ch);
 				}
 				curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
 				$response = curl_exec($ch);
-				if ($this->_dnsVerboseLog) { // TODO: Remove in PRD.
-					log_error(sprintf("%s", implode(curl_getinfo($ch))));
-				}
 				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 				$header = substr($response, 0, $header_size);
 				$data = substr($response, $header_size);
