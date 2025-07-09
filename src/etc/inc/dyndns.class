@@ -1553,7 +1553,7 @@
 					// Convert the PHP array to a JSON string
 					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);			
 					// Update the DNS record.
-					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . urlencode($this->_dnsDomain);
+					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . $this->_dnsDomain;
 					$request_headers = array();
 					$request_headers[] = 'Accept: application/json';
 					$request_headers[] = 'Authorization: Bearer ' . $bearertoken;
@@ -1565,6 +1565,9 @@
 					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 					curl_setopt($ch, CURLOPT_HEADER, 1);
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+					if($this->_dnsVerboseLog){
+						log_error(sprintf('PUT %s', $url));
+					}					
 					break;
 				case 'onecom':
 				case 'onecom-v6':
@@ -2077,6 +2080,9 @@
 					set_curlproxy($ch);
 				}
 				curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
+				if($this->_dnsVerboseLog){
+					log_error(sprintf('%s', implode($ch)));
+				}
 				$response = curl_exec($ch);
 				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 				$header = substr($response, 0, $header_size);
