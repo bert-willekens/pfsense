@@ -1536,12 +1536,15 @@
 								[
 									"original_record" => [
 										"name" => $this->_dnsHost,
-										"type" => $record_type
+										"type" => $record_type,
+										"value" => $current_val,
+										"ttl" => $host_ttl,
 									],
 									"record" => [
 										"name" => $this->_dnsHost,
 										"value" => $this->_dnsIP,
-										"ttl" => $this->_dnsTTL
+										"ttl" => $this->_dnsTTL,
+										"type" => $record_type
 									]
 								]
 							]
