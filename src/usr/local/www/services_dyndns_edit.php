@@ -685,6 +685,8 @@ events.push(function() {
 			case "onecom-v6":
 			case "porkbun":
 			case "porkbun-v6":
+			case "openprovider":
+			case "openprovider-v6":
 				hideGroupInput('domainname', false);
 				hideInput('mx', true);
 				hideCheckbox('wildcard', true);
