@@ -2358,7 +2358,7 @@
 					if (preg_match("/^nochg$/i", $data)) {
 						$status = $status_intro . $success_str . gettext("No Change In IP Address");
 						$successful_update = true;
-					} else if (preg_match('/"success":\strue/', $data) && preg_match('/"code":\s0/', $data)) {
+					} else if (preg_match('/"success":true/', $data) && preg_match('/"code":0/', $data)) {
 						$status = $status_intro . $success_str . gettext("IP Address Changed Successfully!");
 						$successful_update = true;
 					} else if (preg_match('/^badauth$/i', $data)) {
