@@ -1553,7 +1553,7 @@
 					// Convert the PHP array to a JSON string
 					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);                                 
 					if($this->_dnsVerboseLog){
-						log_error(sprintf('%s',implode($jsonString));
+						log_error(sprintf('%s',implode($jsonString)));
 					}					
 					// Update the DNS record.
 					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . urlencode($this->_dnsDomain);
@@ -2360,7 +2360,7 @@
 					if (preg_match("/^nochg$/i", $data)) {
 						$status = $status_intro . $success_str . gettext("No Change In IP Address");
 						$successful_update = true;
-					} else if (preg_match('/"success":\strue/', $data) && preg_match('/"code":\s0/', $data) {
+					} else if (preg_match('/"success":\strue/', $data) && preg_match('/"code":\s0/', $data)) {
 						$status = $status_intro . $success_str . gettext("IP Address Changed Successfully!");
 						$successful_update = true;
 					} else if (preg_match('/^badauth$/i', $data)) {
