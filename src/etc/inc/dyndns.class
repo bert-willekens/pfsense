@@ -1428,11 +1428,11 @@
 						$record_type = "A";
 					}
 
-					// Increase the TTL when needed. Minimal 600 seconds for Openprovider.
+					// Increase the TTL when needed. Minimal 900 seconds for Openprovider.
 					if ($this->_dnsTTL < 900) {
 						$this->_dnsTTL = 900;
 						if($this->_dnsVerboseLog){
-							log_error(sprintf('Configured TTL too low. Adjusted the value to 600.'));
+							log_error(sprintf('Configured TTL too low. Adjusted the value to 900.'));
 						}
 					}
 
