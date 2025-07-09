@@ -1527,7 +1527,7 @@
 					}
 
 					// Prepare the JSON update data.
-					$update_data = [
+					$update_data = array(
 						"id" => $domain_id,
 						"name" => $this->_dnsDomain,
 						"records" => [
@@ -1548,10 +1548,11 @@
 								]
 							]
 						]
-					];
+					);
 
 					// Convert the PHP array to a JSON string
 					$jsonString = json_encode($update_data, JSON_PRETTY_PRINT);			
+
 					// Update the DNS record.
 					$url = "https://api.openprovider.eu/v1beta/dns/zones/zones/" . $this->_dnsDomain;
 					$request_headers = array();
@@ -1567,6 +1568,7 @@
 					curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
 					if($this->_dnsVerboseLog){
 						log_error(sprintf('PUT %s', $url));
+						log_error(sprintf('Payload: %s', $jsonString));
 					}					
 					break;
 				case 'onecom':
