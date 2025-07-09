@@ -2081,7 +2081,7 @@
 				}
 				curl_setopt($ch, CURLOPT_FORBID_REUSE, true);
 				if($this->_dnsVerboseLog){
-					log_error(var_dump($ch);
+					log_error(var_dump($ch));
 				}
 				$response = curl_exec($ch);
 				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
