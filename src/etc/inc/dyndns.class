@@ -2083,7 +2083,7 @@
 				$response = curl_exec($ch);
 				$info = curl_getinfo($ch); // for debugging
 				if ($this->_dnsVerboseLog) {
-					log_error(sprintf('%s', info));
+					log_error(sprintf('%s', $info));
 				}
 				$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 				$header = substr($response, 0, $header_size);
