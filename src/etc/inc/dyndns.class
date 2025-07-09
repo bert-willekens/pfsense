@@ -1530,7 +1530,6 @@
 					$update_data = [
 						"id" => $domain_id,
 						"name" => $this->_dnsDomain,
-						"provider" => "sectigo",
 						"records" => [
 							"update" => [
 								[
@@ -2356,6 +2355,22 @@
 						$this->_debug($data);
 					}
 					break;
+				case 'openprovider':
+				case 'openprovider-v6':
+					if (preg_match("/^nochg$/i", $data)) {
+						$status = $status_intro . $success_str . gettext("No Change In IP Address");
+						$successful_update = true;
+					} else if (preg_match('/"success":\strue/', $data) && preg_match('/"code":\s0/', $data) {
+						$status = $status_intro . $success_str . gettext("IP Address Changed Successfully!");
+						$successful_update = true;
+					} else if (preg_match('/^badauth$/i', $data)) {
+						$status = $status_intro . $error_str . gettext("User Authorization Failed");
+					} else {
+						$status = $status_intro . "(" . gettext("Unknown Response") . ")";
+						log_error($status_intro . gettext("PAYLOAD:") . " " . $data);
+						$this->_debug($data);
+					}
+					break;				
 				//
 				// Not yet ordered providers.
 				// TODO: When editing a provider, move it above in a correct position.
@@ -2698,8 +2713,6 @@
 						$this->_debug($data);
 					}
 					break;
-				case 'openprovider':
-				case 'openprovider-v6':
 				case 'loopia':
 					if (preg_match("/nochg/i", $data)) {
 						$status = $status_intro . $success_str . gettext("No Change In IP Address");
@@ -3019,7 +3032,7 @@
 					/* Responds with HTTP 200 on success.
 					   Responds with HTTP 4xx on error.
 					   Returns JSON data as body */
-;
+					
 					if ($http_code == "200") {
 						$status = $status_intro . $success_str . gettext("IP Address Updated Successfully!");
 						$successful_update = true;
@@ -3043,7 +3056,7 @@
 					/* Responds with HTTP 200 on success.
 					   Responds with HTTP 4xx or  on error.
 					   Returns JSON data as body */
-;
+					
 					if (preg_match("/\s200\sOK/i", $header)) {
 						$status = $status_intro . $success_str . gettext("IP Address Updated Successfully!");
 						$successful_update = true;
